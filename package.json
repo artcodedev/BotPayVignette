@@ -1,0 +1,22 @@
+{
+  "name": "botpayvignette",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.51.1",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node-fetch": "^2.6.12",
+    "axios": "^1.8.4",
+    "fs-extra": "^11.3.0",
+    "https-proxy-agent": "^7.0.6",
+    "node-fetch": "^3.3.2",
+    "playwright": "^1.51.1"
+  }
+}

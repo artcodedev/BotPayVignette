@@ -1,0 +1,17 @@
+import fs from 'fs-extra'
+
+class Logger {
+
+    public static async write(file: string | undefined, message: any): Promise<void> {
+
+        if (file && message) {
+
+            const mess: string = `[+] ${new Date()} ${message}\n`;
+            fs.outputFileSync(file, mess, { flag: 'a+' })
+            
+        }
+    }
+
+}
+
+export default Logger;
