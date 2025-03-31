@@ -6,7 +6,9 @@ class Logger {
 
         if (file && message) {
 
-            const mess: string = `[+] ${new Date()} ${message}\n`;
+            const date = new Date().toLocaleString("ru-RU", { timeZone: "Europe/Moscow" })
+
+            const mess: string = `[+] ${date} ${message}\n`;
             fs.outputFileSync(file, mess, { flag: 'a+' })
             
         }
