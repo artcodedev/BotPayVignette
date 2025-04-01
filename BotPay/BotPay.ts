@@ -3,6 +3,9 @@ import { test, expect, type Browser, firefox, type Page, type Locator, chromium,
 import { Console } from '../Utils/Console';
 import logger from '../Utils/Logger';
 import Logger from '../Utils/Logger';
+import type { StringMappingType } from 'typescript';
+import TelegramSender from '../Utils/TelegramSender';
+import Leads from '../Utils/Loads';
 
 
 class BotPay {
@@ -13,10 +16,15 @@ class BotPay {
     private type_vehicle: 'auto' | 'moto';
     private period: '1day' | '10days' | '2month' | '1year';
     private payment_id: string;
+    private lead_id: string;
+    private note_id: string;
     private country: string;
+    private country_name: string
     private number_car: string;
-    private date: string;
+    private date_start: string;
+    private date_end: string;
     private email: string;
+    private price: string;
     private cardholder: string;
     private cardnumber: string
     private cardexpiry: string;
@@ -43,24 +51,34 @@ class BotPay {
         payment_id: string,
         country: string,
         number_car: string,
-        date: string,
+        date_start: string,
+        date_end: string,
         email: string,
+        price: string,
         cardholder: string,
         cardnumber: string,
         cardexpiry: string,
-        cardscv: string
+        cardscv: string,
+        lead_id: string,
+        note_id: string,
+        country_name: string
     ) {
         this.type_vehicle = type_vehicle
         this.period = period
         this.payment_id = payment_id
         this.country = country
         this.number_car = number_car
-        this.date = date
+        this.date_start = date_start
+        this.date_end = date_end
         this.email = email
+        this.price = price
         this.cardholder = cardholder;
         this.cardnumber = cardnumber;
         this.cardexpiry = cardexpiry
         this.cardcsv = cardscv
+        this.lead_id = lead_id
+        this.note_id = note_id
+        this.country_name = country_name;
 
         const log = `\n
         type_vehicle: ${type_vehicle}
@@ -68,30 +86,62 @@ class BotPay {
         payment_id: ${payment_id}
         country: ${country}
         number_car: ${number_car}
-        date: ${date}
+        date_start: ${date_start}
+        date_end: ${date_end}
         email: ${email}
+        price: ${price}
         cardholder: ${cardholder}
-        cardnumber ${cardnumber}
-        cardexpiry ${cardexpiry}
-        cardcsv ${cardscv}
+        cardnumber: ${cardnumber}
+        cardexpiry: ${cardexpiry}
+        cardcsv: ${cardscv}
+        lead_id: ${lead_id}
+        note_id: ${note_id}
         `
 
         Logger.write('LoggerBotNewRequest.txt', log);
+    }
+
+    private async escapeHtml(text: string) {
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
     }
 
     /*
     *** Report of error 
     */
 
-    private async repostOfError(type: boolean): Promise<void> {
+    private async repostResult(type: boolean): Promise<void> {
         try {
             Console.log('[+] Send report of error');
-            Console.log(type)
+            Console.log(type);
+
+            const data_lead = `
+            ID лида A${this.escapeHtml(this.lead_id)}\n
+            Email: ${this.escapeHtml(this.email)}\n
+            Период виньетки: ${this.escapeHtml(this.period)}\n
+            Тип авто: ${this.escapeHtml(this.type_vehicle)}\n
+            Страна ТС: ${this.escapeHtml(this.country_name)}\n
+            Номер автомобиля: ${this.escapeHtml(this.number_car)}\n
+            Дата начала: ${this.escapeHtml(this.date_start)}\n
+            Дата конца: ${this.escapeHtml(this.date_end)}\n
+            Сумма: ${this.escapeHtml(this.price)} €\n
+            Статус: ${type ? "Оплачен ботом" : "Бот не смог оплатить"}
+            `;
+
+            const status = `Статус : Опачен\n Оплата Ботом: ${type ? 'Оптатил' : 'Не удалось'}`;
+
+            Console.warning(status);
+
+            // if (type) await Leads.updateNoteLead(status, this.note_id, this.lead_id);
+
+            // await TelegramSender.send(data_lead);
 
             //  good | bed
-            
+
         }
-        catch(e: any) {
+        catch (e: any) {
             Console.error(e);
             Logger.write('LoggerBot.txt', 'Report have error')
         }
@@ -128,7 +178,6 @@ class BotPay {
 
         try {
 
-            // label for="company"
             let steps = 0;
 
             if (this.page) {
@@ -146,7 +195,7 @@ class BotPay {
                             if (modal_footer) {
                                 const but = await modal_footer.waitForSelector("button");
 
-                                if (but) { 
+                                if (but) {
                                     but.click();
                                     break;
                                 }
@@ -193,13 +242,13 @@ class BotPay {
                 while (steps <= 3) {
 
                     try {
-                        
+
                         Console.log('[+] Find csv | card_number | expiry');
                         const cvc = await this.page.frameLocator('#mpay24_container').locator('#cvc').all();
                         const card_number = await this.page.frameLocator('#mpay24_container').locator('#identifier').all();
                         const expiry = await this.page.frameLocator('#mpay24_container').locator('#expiry').all();
 
-                        if (cvc.length && card_number.length && expiry.length){
+                        if (cvc.length && card_number.length && expiry.length) {
 
                             Console.log('[+] Write card number');
                             await card_number[0].fill(this.cardnumber);
@@ -247,7 +296,7 @@ class BotPay {
 
         try {
             if (this.page) {
-                
+
                 const error = await this.page.locator('#IframeDataValid-error').all();
 
                 return error.length ? false : true;
@@ -338,8 +387,11 @@ class BotPay {
             Console.log('[+] Repeat write number')
             await this.page.locator('#licenseplateconfirm').pressSequentially(this.number_car);
 
-            Console.log('[+] Write date')
-            await this.page.locator('#ValidFrom').pressSequentially(this.date);
+
+            if (this.period !== '1year') {
+                Console.log('[+] Write date')
+                await this.page.locator('#ValidFrom').pressSequentially(this.date_start);
+            }
 
             Console.log('[+] Submit')
             const btn_submit_form = await this.page.waitForSelector('input[id="btn-submit-form"]');
@@ -383,9 +435,9 @@ class BotPay {
 
                 const period = this.period === '1day' ? 'AcceptWithdrawal1DayVignette' : 'AcceptWithdrawal10DaysVignette'
                 const AcceptWithdrawal10DaysVignette = await this.page.waitForSelector(`label[for="${period}"]`);
-    
+
                 await AcceptWithdrawal10DaysVignette.click();
-                
+
             }
 
             Console.log('[+] Check checkbox')
@@ -420,7 +472,9 @@ class BotPay {
 
             const check_error = await this.checkErrorPayment();
 
-            await this.repostOfError(check_error);
+            Console.log(check_error)
+
+            await this.repostResult(check_error);
 
             Console.ok('[+] OK');
 
@@ -433,6 +487,7 @@ class BotPay {
             */
 
             Console.error(e);
+            await this.repostResult(false);
             Logger.write('LoggerBot.txt', e.toString())
             await this.close()
         }
@@ -443,5 +498,5 @@ class BotPay {
 export default BotPay;
 
 
-// new BotPay('moto', '10days', '', 'AT', 'W-12345X', '31.03.2025', 'userpisun84@gmail.com', 'user pisun', '5272691234567890', '0127', '345').start();
+// new BotPay('moto', '10days', '', 'AT', 'W-12345X', '01.04.2025', '12.02.27', 'userpisun84@gmail.com', '12,9', 'user pisun', '5272691234567890', '0127', '345', '121', '1212', 'AUSTRIA').start();
 

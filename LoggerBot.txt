@@ -68,3 +68,25 @@ Call log:
 Call log:
 [2m  - waiting for locator('select[id="licenseplate_country"]')[22m
 
+[+] 01.04.2025, 20:30:53 TimeoutError: sequentially: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#licenseplateconfirm')[22m
+[2m    - locator resolved to <input value="" type="text" required="True" autocomplete="off" class="form-control" placeholder="W-12345X" id="licenseplateconfirm" name="LicenseplateConfirm"/>[22m
+[2m  - elementHandle.type("wewewe")[22m
+
+[+] 01.04.2025, 20:30:56 Error: forSelector: Target page, context or browser has been closed
+Call log:
+[2m  - waiting for locator('input[id="MPay24CustomerName"]') to be visible[22m
+
+[+] 01.04.2025, 20:31:24 Error: forSelector: Target page, context or browser has been closed
+Call log:
+[2m  - waiting for locator('input[id="email"]') to be visible[22m
+
+[+] 01.04.2025, 20:34:28 Error: forSelector: Target page, context or browser has been closed
+Call log:
+[2m  - waiting for locator('input[id="email"]') to be visible[22m
+
+[+] 01.04.2025, 20:37:43 TimeoutError: forSelector: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('input[id="email"]') to be visible[22m
+

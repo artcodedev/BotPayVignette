@@ -14,7 +14,7 @@ export class Fetch {
     
             });
     
-            return await response.json();
+            return await response.text();
 
         } catch(e) {
             Console.log(e)
