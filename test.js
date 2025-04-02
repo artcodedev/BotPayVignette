@@ -67,6 +67,14 @@ async function getStatuses() {
     }
 
 }
+const playwright = require('playwright');
+(async () => {
+    const browser = await playwright.firefox.launch();
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto('http://example.com');
+    await page.screenshot({ path: 'example.png' });
+    await browser.close();
+})();
 
-
-getStatuses();
+// getStatuses();

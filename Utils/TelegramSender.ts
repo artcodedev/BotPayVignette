@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Console } from "./Console";
 
 
 class TelegramSender {
@@ -20,6 +21,7 @@ class TelegramSender {
             return true;
         }
         catch(e: any) {
+            Console.error(e)
             return false;
         }
     }

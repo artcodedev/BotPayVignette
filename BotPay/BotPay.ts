@@ -98,7 +98,7 @@ class BotPay {
         note_id: ${note_id}
         `
 
-        Logger.write('LoggerBotNewRequest.txt', log);
+        Logger.write('./Logs/LoggerBotNewRequest.txt', log);
     }
 
     private async escapeHtml(text: string) {
@@ -115,35 +115,33 @@ class BotPay {
     private async repostResult(type: boolean): Promise<void> {
         try {
             Console.log('[+] Send report of error');
-            Console.log(type);
 
             const data_lead = `
-            ID лида A${this.escapeHtml(this.lead_id)}\n
-            Email: ${this.escapeHtml(this.email)}\n
-            Период виньетки: ${this.escapeHtml(this.period)}\n
-            Тип авто: ${this.escapeHtml(this.type_vehicle)}\n
-            Страна ТС: ${this.escapeHtml(this.country_name)}\n
-            Номер автомобиля: ${this.escapeHtml(this.number_car)}\n
-            Дата начала: ${this.escapeHtml(this.date_start)}\n
-            Дата конца: ${this.escapeHtml(this.date_end)}\n
-            Сумма: ${this.escapeHtml(this.price)} €\n
-            Статус: ${type ? "Оплачен ботом" : "Бот не смог оплатить"}
-            `;
+Страна виньетки: ${this.country === 'Czech' ? '🇨🇿 Czech' : '🇦🇹 Austria'}\n
+ID лида BOT${await this.escapeHtml(this.lead_id)}\n
+Email: ${await this.escapeHtml(this.email)}\n
+Период виньетки: ${await this.escapeHtml(this.period)}\n
+Тип авто: ${await this.escapeHtml(this.type_vehicle)}\n
+Страна ТС: ${await this.escapeHtml(this.country_name)}\n
+Номер автомобиля: ${await this.escapeHtml(this.number_car)}\n
+Дата начала: ${await this.escapeHtml(this.date_start)}\n
+Дата конца: ${await this.escapeHtml(this.date_end)}\n
+Сумма: ${await this.escapeHtml(this.price)} €\n
+Статус: ${type ? "Оплачен ботом" : "Бот не смог оплатить"}\n
+`;
 
-            const status = `Статус : Опачен\n Оплата Ботом: ${type ? 'Оптатил' : 'Не удалось'}`;
+            const status = `Статус : Опачен\nОплата Ботом: ${type ? 'Оптатил' : 'Не удалось'}`;
 
-            Console.warning(status);
+            if (type && this.page) await this.page.screenshot({ path: `./Data/screens/screen_${this.payment_id}.png` });
 
-            // if (type) await Leads.updateNoteLead(status, this.note_id, this.lead_id);
+            await Leads.updateNoteLead(status, this.note_id, this.lead_id);
 
-            // await TelegramSender.send(data_lead);
-
-            //  good | bed
+            await TelegramSender.send(data_lead);
 
         }
         catch (e: any) {
             Console.error(e);
-            Logger.write('LoggerBot.txt', 'Report have error')
+            await Logger.write('./Logs/LoggerBot.txt', 'Report have error')
         }
     }
 
@@ -158,7 +156,7 @@ class BotPay {
         }
         catch (e) {
             Console.error(e);
-            Logger.write('LoggerBot.txt', 'Can not close browser')
+            await Logger.write('./Logs/LoggerBot.txt', 'Can not close browser')
         }
     }
 
@@ -212,7 +210,7 @@ class BotPay {
 
                 }
             } else {
-                Logger.write('LoggerBot.txt', 'page is null in selectConsumer');
+                await Logger.write('./Logs/LoggerBot.txt', 'page is null in selectConsumer');
             }
 
 
@@ -223,7 +221,7 @@ class BotPay {
             */
 
             Console.error(e);
-            Logger.write('LoggerBot.txt', e.toString())
+            await Logger.write('./Logs/LoggerBot.txt', e.toString())
         }
 
     }
@@ -285,7 +283,7 @@ class BotPay {
             */
 
             Console.error(e);
-            Logger.write('LoggerBot.txt', e.toString())
+            await Logger.write('./Logs/LoggerBot.txt', e.toString())
         }
     }
 
@@ -302,13 +300,13 @@ class BotPay {
                 return error.length ? false : true;
             }
 
-            Logger.write('LoggerBot.txt', 'page content is null in checkErrorPayment');
+            await Logger.write('./Logs/LoggerBot.txt', 'page content is null in checkErrorPayment');
 
             return false;
         } catch (e: any) {
 
             Console.error(e);
-            Logger.write('LoggerBot.txt', e.toString())
+            await Logger.write('./Logs/LoggerBot.txt', e.toString())
 
             return false;
         }
@@ -329,6 +327,7 @@ class BotPay {
                     "password": "Qa0kaM",
                 },
             });
+
             this.page = await this.browser.newPage();
 
             await this.page.setViewportSize({ width: 1200, height: 900 });
@@ -363,8 +362,10 @@ class BotPay {
             Console.log('[+] Find link for pay')
             const period_pay_data = this.urls_pay[this.type_vehicle][this.period];
 
+            Console.log('22222')
             const period_pay = await this.page.waitForSelector(`a[href="/en/toll-products/digitale-vignette/${period_pay_data}"]`);
 
+            Console.log('333')
             await period_pay.click();
 
             if (this.period === '1year' || this.period === '2month') {
@@ -405,10 +406,10 @@ class BotPay {
 
             if (email) {
 
-                Console.log('[+] Write email')
+                Console.log('[+] Write email');
                 await this.page.locator('#email').pressSequentially(this.email);
 
-                Console.log('[+] Repeat write email')
+                Console.log('[+] Repeat write email');
                 await this.page.locator('#emailConfirm').pressSequentially(this.email);
 
             }
@@ -478,7 +479,7 @@ class BotPay {
 
             Console.ok('[+] OK');
 
-            await this.close();
+            await this.browser.close();
         }
 
         catch (e: any) {
@@ -488,7 +489,7 @@ class BotPay {
 
             Console.error(e);
             await this.repostResult(false);
-            Logger.write('LoggerBot.txt', e.toString())
+            await Logger.write('./Logs/LoggerBot.txt', e.toString())
             await this.close()
         }
     }

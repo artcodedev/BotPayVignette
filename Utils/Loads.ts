@@ -4,9 +4,8 @@ import { Console } from "./Console";
 
 class Leads {
 
-  static accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjRmMThkMDFiYTc4ZDRlNmM2YzM1ZjdhOGM0ZDI5YmE4NTdjZjNjNjBhZDlkYmY0NDI0YzY4MWE1NzBlN2MxNmQzZDQ1YWI4N2IyZWVjOTBkIn0.eyJhdWQiOiJlZDhiY2E0Mi03NTA5LTQ2MDctOTk0Zi1jNjRhOTM4NjAxY2UiLCJqdGkiOiI0ZjE4ZDAxYmE3OGQ0ZTZjNmMzNWY3YThjNGQyOWJhODU3Y2YzYzYwYWQ5ZGJmNDQyNGM2ODFhNTcwZTdjMTZkM2Q0NWFiODdiMmVlYzkwZCIsImlhdCI6MTc0MjgzOTczNSwibmJmIjoxNzQyODM5NzM1LCJleHAiOjE3NDMyMDY0MDAsInN1YiI6IjE3NTMwOTgiLCJncmFudF90eXBlIjoiIiwiYWNjb3VudF9pZCI6MTY0NTc3OTYsImJhc2VfZG9tYWluIjoiYW1vY3JtLnJ1IiwidmVyc2lvbiI6Miwic2NvcGVzIjpbImNybSIsImZpbGVzIiwiZmlsZXNfZGVsZXRlIiwibm90aWZpY2F0aW9ucyIsInB1c2hfbm90aWZpY2F0aW9ucyJdLCJoYXNoX3V1aWQiOiIwZjZjMDgwZC1mZTk0LTQ0NTktYjE5Ni0wNmUxMjFmOTZlNjEiLCJhcGlfZG9tYWluIjoiYXBpLWIuYW1vY3JtLnJ1In0.Qvjqt6j_JR1kuRDXbZxaNMEEZNfYrZASd9oPatYkeprZttypnRLlet1uxXkVnkIBfsGYoOeqof30AKoLs-Bl5o6Y3Jt96DoiK-71I27MKZxH_1v4N81m_wta7fAOaTRvsp7OpjNfVlDpmEzeILmpKRi1_yUUjn2o6c0ANva8Q_V6AU9m7IiYp-1tChajfRIwsatqy7B9kwxnk4u3aoEi6grKUhGMd2bOlFT0swLlvk83oYFfhZa2Lp9HUfmNuM-fi6cucrxGw6jIqAxwJvoN_TprCAfs_wYUjUXVaWs0PiCkjsiTzfzjvm9R-n6DEShY2gYrvOpsMG10msvpCfRG8w';
-
-
+  static accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjNjMDgxZWU2ZDFhYjc2MzlhZDk0NjljYThlNGQ5NDU3ZTgwN2Q4MTE5M2RlZDYzZTY2ODZjODE4Y2FjOWYzNjNiN2NkODNjN2ExNzQzODIxIn0.eyJhdWQiOiJlZDhiY2E0Mi03NTA5LTQ2MDctOTk0Zi1jNjRhOTM4NjAxY2UiLCJqdGkiOiIzYzA4MWVlNmQxYWI3NjM5YWQ5NDY5Y2E4ZTRkOTQ1N2U4MDdkODExOTNkZWQ2M2U2Njg2YzgxOGNhYzlmMzYzYjdjZDgzYzdhMTc0MzgyMSIsImlhdCI6MTc0MzQwNjkzOCwibmJmIjoxNzQzNDA2OTM4LCJleHAiOjE4MTU2MDk2MDAsInN1YiI6IjE3NTMwOTgiLCJncmFudF90eXBlIjoiIiwiYWNjb3VudF9pZCI6MTY0NTc3OTYsImJhc2VfZG9tYWluIjoiYW1vY3JtLnJ1IiwidmVyc2lvbiI6Miwic2NvcGVzIjpbImNybSIsImZpbGVzIiwiZmlsZXNfZGVsZXRlIiwibm90aWZpY2F0aW9ucyIsInB1c2hfbm90aWZpY2F0aW9ucyJdLCJoYXNoX3V1aWQiOiI2MDI0M2MyYi0zZTllLTRhZGEtYTY5My1mNjNiOWY1YmYxM2IiLCJhcGlfZG9tYWluIjoiYXBpLWIuYW1vY3JtLnJ1In0.iyGue73YmN07f_XVj3kWdV5s8TPrGZQg48zPQKai3-JahkEYt6kHgo9o8PdmVufYgB7PReXO4GacNTdW7gmOZCjrxRMcNQ1OsXRgPcUSJ-Li3-5p_-eSKcaTao5m6DOcn3Kyzpy5UgDBlc8ej8oy1zq3WweiHytpKWqkccW0w4EjsCVMPaNAQXI2FX8oFUejQDjyVGHgzn-Lj0UV2kgbXaWWEu5svmAHH5jgfWo8ytrnniFzNAGNzgeeVCCAm6fTu5IacIXyuosPvhHqkTofN7tKnXIfhDyhoELS2r0Zdu1h9_Nf17B90ffg3qq9ay8O-FxJuYvuRHcRbNzdW72qYA';
+  
   static async updateNoteLead(text: string, note_id: string, lead_id: string) {
     try {
 
@@ -31,8 +30,8 @@ class Leads {
 
       return { status: false, data: null };
     }
-    catch (e) {
-      Console.log(e)
+    catch (e: any) {
+      Console.error(e)
       return { status: false };
     }
   }
@@ -40,3 +39,5 @@ class Leads {
 }
 
 export default Leads;
+
+// await Leads.updateNoteLead('121212', '396415735', '31476909');

@@ -1,6 +1,7 @@
 import { Elysia } from 'elysia'
 import BotPay from './BotPay/BotPay'
 import Reader from './Utils/Reader'
+import { Console } from './Utils/Console'
 
 // interface Data {
 //     type_vehicle: "auto" | "moto"
@@ -45,7 +46,8 @@ new Elysia()
             if (!orders) orders = [];
 
             const orderIndex = orders.length ? orders.findIndex((order: Data) => order.payment_id === body.payment_id) : -1;
-            console.log(orderIndex);
+            
+            console.log(body)
 
             if (orderIndex == -1) {
 
